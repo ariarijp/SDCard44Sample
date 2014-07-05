@@ -1,12 +1,19 @@
 package com.example.sdcard44sample;
 
 import android.app.Activity;
+import android.app.Application;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.SystemClock;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 
 public class MyActivity extends Activity {
@@ -70,14 +77,44 @@ public class MyActivity extends Activity {
         } else {
             Log.i(TAG, testFilePath + "の作成に失敗しました");
         }
+
+        readTestFile(testFile);
     }
 
     private void createTestFile(File file) {
         if (!file.exists()) {
             try {
                 file.createNewFile();
+                if (file.canWrite()) {
+                    FileWriter fw = new FileWriter(file);
+
+                    // 実行時のタイムスタンプをファイルに書き込む
+                    String timeStamp = String.valueOf(System.currentTimeMillis());
+                    fw.append(timeStamp);
+                    Log.i(TAG, "テキストファイルに書き込んだ文字列: " + timeStamp);
+
+                    fw.close();
+                }
             } catch (IOException e) {
                 // e.printStackTrace();
+            }
+        }
+    }
+
+    private void readTestFile(File file) {
+        if (file.exists() && file.canRead()) {
+            BufferedReader br = null;
+            try {
+                br = new BufferedReader(new FileReader(file));
+                String body;
+                if ((body = br.readLine()) != null) {
+                    Log.i(TAG, "テキストファイルから読み込んだ文字列: " + body);
+                }
+                br.close();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
     }

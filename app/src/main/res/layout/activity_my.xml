@@ -14,5 +14,5 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:text="SDカード書き込みテスト" />
+        android:text="外部ストレージR/Wテスト" />
 </RelativeLayout>
