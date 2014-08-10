@@ -1,14 +1,13 @@
 package com.example.sdcard44sample;
 
 import android.app.Activity;
-import android.app.Application;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.SystemClock;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -48,38 +47,50 @@ public class MyActivity extends Activity {
         findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // getExternalFilesDirを呼ぶと内部ストレージ、外部ストレージの双方にディレクトリが作成される。
-                // 引数は省略できないため仮にDIRECTORY_DOWNLOADSを指定している。
-                // getExternalFilesDirが返すFileのgetAbsolutePath()を呼び出しても、
-                // 外部ストレージのパスでなく内部ストレージのパスが返されることが多い
-                Log.i(TAG, "getExternalFilesDirを呼び出します");
-                File extDir = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS);
-                Log.i(TAG, "getExternalFilesDirが返すパス: " + extDir.getAbsolutePath());
+                if (Build.VERSION.SDK_INT >= 19) {
+                    // getExternalFilesDirを呼ぶと内部ストレージ、外部ストレージの双方にディレクトリが作成される。
+                    // 引数は省略できないため仮にDIRECTORY_DOWNLOADSを指定している。
+                    // getExternalFilesDirが返すFileのgetAbsolutePath()を呼び出しても、
+                    // 外部ストレージのパスでなく内部ストレージのパスが返されることが多い
+                    Log.i(TAG, "getExternalFilesDirを呼び出します");
+                    File extDir = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS);
+                    Log.i(TAG, "getExternalFilesDirが返すパス: " + extDir.getAbsolutePath());
 
-                // <SDカードのパス>/Android/data/<アプリのパッケージ名>以下には書き込みできる。
-                doTest(EXTERNAL_STORAGE_PATH + "/Android/data/" + PACKAGE_NAME + "/files/" + TEST_FILE_NAME);
-                doTest(EXTERNAL_STORAGE_PATH + "/Android/data/" + PACKAGE_NAME + "/" + TEST_FILE_NAME);
+                    // <SDカードのパス>/Android/data/<アプリのパッケージ名>以下には書き込みできる。
+                    doTest(EXTERNAL_STORAGE_PATH + "/Android/data/" + PACKAGE_NAME + "/files/" + TEST_FILE_NAME);
+                    doTest(EXTERNAL_STORAGE_PATH + "/Android/data/" + PACKAGE_NAME + "/" + TEST_FILE_NAME);
 
-                // <SDカードのパス>/Android/data/<アプリのパッケージ名>以外には書き込みできない。
-                doTest(EXTERNAL_STORAGE_PATH + "/Android/data/" + TEST_FILE_NAME);
-                doTest(EXTERNAL_STORAGE_PATH + "/Android/" + TEST_FILE_NAME);
-                doTest(EXTERNAL_STORAGE_PATH + "/" + TEST_FILE_NAME);
+                    // <SDカードのパス>/Android/data/<アプリのパッケージ名>以外には書き込みできない。
+                    doTest(EXTERNAL_STORAGE_PATH + "/Android/data/" + TEST_FILE_NAME);
+                    doTest(EXTERNAL_STORAGE_PATH + "/Android/" + TEST_FILE_NAME);
+                    doTest(EXTERNAL_STORAGE_PATH + "/" + TEST_FILE_NAME);
+                } else {
+                    Toast.makeText(MyActivity.this, "APIバージョンが19ではありません", Toast.LENGTH_SHORT).show();
+                }
             }
         });
+
 
         findViewById(R.id.getExternalFilesDirs).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                File[] extDirs = getExternalFilesDirs(Environment.DIRECTORY_DOWNLOADS);
+                if (Build.VERSION.SDK_INT >= 19) {
+                    TextView tv = (TextView) findViewById(R.id.log);
+                    File[] extDirs = getExternalFilesDirs(Environment.DIRECTORY_DOWNLOADS);
 
-                TextView tv = (TextView)findViewById(R.id.log);
-                StringBuilder sb = new StringBuilder();
-                for (File extDir: extDirs) {
-                    Log.d(TAG, extDir.getAbsolutePath());
-                    sb.append(extDir.getAbsoluteFile()).append("\n");
+                    StringBuilder sb = new StringBuilder();
+                    for (File extDir : extDirs) {
+                        Log.d(TAG, extDir.getAbsolutePath());
+                        sb.append(extDir.getAbsoluteFile()).append("\n");
+                    }
+
+                    tv.setText(sb.toString());
+
+                    File extSdDir = extDirs[extDirs.length - 1];
+                    Log.d(TAG, extSdDir.getAbsolutePath());
+                } else {
+                    Toast.makeText(MyActivity.this, "APIバージョンが19ではありません", Toast.LENGTH_SHORT).show();
                 }
-
-                tv.setText(sb.toString());
             }
         });
     }
