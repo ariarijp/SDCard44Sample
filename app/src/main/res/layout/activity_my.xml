@@ -24,4 +24,15 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:text="getExternalFilesDirs()" />
+
+    <TextView
+        android:layout_marginTop="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:text="getExternalFilesDirsの結果" />
+    <TextView
+        android:id="@+id/log"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 </LinearLayout>

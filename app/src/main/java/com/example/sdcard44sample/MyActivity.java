@@ -8,6 +8,7 @@ import android.os.SystemClock;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -71,9 +72,14 @@ public class MyActivity extends Activity {
             public void onClick(View view) {
                 File[] extDirs = getExternalFilesDirs(Environment.DIRECTORY_DOWNLOADS);
 
+                TextView tv = (TextView)findViewById(R.id.log);
+                StringBuilder sb = new StringBuilder();
                 for (File extDir: extDirs) {
                     Log.d(TAG, extDir.getAbsolutePath());
+                    sb.append(extDir.getAbsoluteFile()).append("\n");
                 }
+
+                tv.setText(sb.toString());
             }
         });
     }
