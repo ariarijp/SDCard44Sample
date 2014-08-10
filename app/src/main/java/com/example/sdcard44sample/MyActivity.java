@@ -65,6 +65,17 @@ public class MyActivity extends Activity {
                 doTest(EXTERNAL_STORAGE_PATH + "/" + TEST_FILE_NAME);
             }
         });
+
+        findViewById(R.id.getExternalFilesDirs).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                File[] extDirs = getExternalFilesDirs(Environment.DIRECTORY_DOWNLOADS);
+
+                for (File extDir: extDirs) {
+                    Log.d(TAG, extDir.getAbsolutePath());
+                }
+            }
+        });
     }
 
     private void doTest(String testFilePath) {
